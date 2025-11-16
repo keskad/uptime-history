@@ -1,0 +1,47 @@
+conky.config = {
+    -- Window settings
+    alignment = 'top_right',
+    gap_x = 20,
+    gap_y = 50,
+    
+    -- Size
+    minimum_width = 700,
+    maximum_width = 700,
+    
+    -- Transparency
+    own_window = true,
+    own_window_type = 'desktop',
+    own_window_transparent = true,
+    own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+    own_window_argb_visual = true,
+    own_window_argb_value = 0,
+    
+    -- Colors
+    default_color = 'white',
+    default_outline_color = 'black',
+    default_shade_color = 'black',
+    
+    -- Font
+    use_xft = true,
+    font = 'Monospace:size=9',
+    
+    -- Update interval
+    update_interval = 60.0,
+    
+    -- Double buffering (eliminates flickering)
+    double_buffer = true,
+    
+    -- Other
+    draw_borders = false,
+    draw_outline = false,
+    draw_shades = false,
+    use_spacer = 'none',
+    no_buffers = true,
+    uppercase = false,
+}
+
+conky.text = [[
+${color lightgrey}${font Monospace:bold:size=10}Uptime History${font}${color}
+${hr 1}
+${execpi 60 uptime-history}
+]]
