@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"os"
 	"os/exec"
@@ -24,6 +25,10 @@ type Session struct {
 }
 
 func main() {
+	// Parse command-line flags
+	maxRows := flag.Int("rows", 20, "Number of rows to display in the table")
+	flag.Parse()
+
 	fmt.Println("=== Computer Boot and Shutdown History ===")
 	fmt.Println()
 
@@ -45,7 +50,7 @@ func main() {
 		return
 	}
 
-	displaySessions(sessions)
+	displaySessions(sessions, *maxRows)
 	displaySummary(sessions)
 }
 
@@ -343,19 +348,32 @@ func calculateSessions(events []Event) []Session {
 	return sessions
 }
 
-func displaySessions(sessions []Session) {
+func displaySessions(sessions []Session, maxRows int) {
 	fmt.Println("Computer work sessions:")
 	fmt.Println()
 	fmt.Printf("%-25s | %-25s | %-20s | %s\n", "Start", "End", "Uptime", "Type")
 	fmt.Println(strings.Repeat("-", 110))
 
-	for _, session := range sessions {
+	// Determine how many rows to display
+	displayCount := len(sessions)
+	if maxRows > 0 && maxRows < displayCount {
+		displayCount = maxRows
+	}
+
+	// Display the last N sessions in reverse order (newest first)
+	startIdx := len(sessions) - displayCount
+	for i := len(sessions) - 1; i >= startIdx; i-- {
+		session := sessions[i]
 		fmt.Printf("%-25s | %-25s | %-20s | %s\n",
 			session.Start.Format("2006-01-02 15:04:05"),
 			session.End.Format("2006-01-02 15:04:05"),
 			formatDuration(session.Duration),
 			session.Type,
 		)
+	}
+
+	if displayCount < len(sessions) {
+		fmt.Printf("\n(Showing last %d of %d sessions. Use -rows flag to show more)\n", displayCount, len(sessions))
 	}
 	fmt.Println()
 }
